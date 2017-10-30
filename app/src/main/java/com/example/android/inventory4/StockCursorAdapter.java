@@ -1,8 +1,8 @@
 package com.example.android.inventory4;
 
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -14,104 +14,122 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.inventory4.data.StockContract;
-import com.squareup.picasso.Picasso;
-
-import static android.R.attr.content;
-import static android.R.attr.name;
-import static com.example.android.inventory4.R.id.shoppingBasket;
-import static com.example.android.inventory4.R.id.supplier;
+import static com.example.android.inventory4.R.id.price;
 import static com.example.android.inventory4.data.StockContract.StockEntry;
 
 /**
  * Created by Patty on 10/3/2017.
  */
 
-public class StockCursorAdapter extends CursorAdapter{
+public class StockCursorAdapter extends CursorAdapter {
 
     private Object imageString;
 
     public StockCursorAdapter(Context context, Cursor c) {
         super((Context) context, c, 0);
     }
+
+    final int COLUMN_INDEX_ID = 0;
+    final int COLUMN_INDEX_NAME = 1;
+    final int COLUMN_INDEX_PRICE = 2;
+    final int COLUMN_INDEX_QUANTITY = 3;
+    final int COLUMN_INDEX_SUPPLIER = 4;
+    final int COLUMN_INDEX_IMAGE = 5;
+
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent){
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.list_item, parent, false);
     }
+
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
         //Find individual views that we want to modify in the list item layout
-        TextView nameTextView = (TextView) view.findViewById(R.id.book_name);
-        TextView supplierTextView = (TextView) view.findViewById(supplier);
-        ImageView merchandisePhoto = (ImageView) view.findViewById(R.id.merchandiseImage);
-        TextView quantityTextView = (TextView) view.findViewById(R.id.current_inventory_quantity);
-        ImageView saleButton = (ImageView) view.findViewById(shoppingBasket);
+        TextView nameTextView = (TextView) view.findViewById(R.id.toy_name);
+        TextView supplierTextView = (TextView) view.findViewById(price);
+        ImageView merchandisePhoto = (ImageView) view.findViewById(R.id.toy_image);
+        TextView quantityTextView = (TextView) view.findViewById(R.id.current_quantity);
+        ImageView saleButton = (ImageView) view.findViewById(R.id.green_sale_bag_button);
 
-        ImageView placeOrderEmailImage = (ImageView) view.findViewById(R.id.emailPlaceOrder);
+        ImageView emailImage = (ImageView) view.findViewById(R.id.email);
 
         //find the columns of stock attributes
         int nameColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_NAME);
         int supplierColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_SUPPLIER);
-        int imageColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_IMAGE);
+        final int imageColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_IMAGE);
         int quantityColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_QUANTITY);
 
         //read stock attributes from the cursor for the current item
-        String stockName = cursor.getString(nameColumnIndex);
-        String stockSupplier = cursor.getString(supplierColumnIndex);
+        final int stockId = cursor.getInt(COLUMN_INDEX_ID);
+        final String stockName = cursor.getString(COLUMN_INDEX_NAME);
+        final String stockSupplier = cursor.getString(COLUMN_INDEX_SUPPLIER);
+        String supplier = cursor.getString(COLUMN_INDEX_SUPPLIER);
+        final String stockPrice = cursor.getString(COLUMN_INDEX_PRICE);
+        final int stockQuantity = cursor.getInt(COLUMN_INDEX_QUANTITY);
+
+        Uri imageUri = Uri.parse(cursor.getString(COLUMN_INDEX_IMAGE));
+
+
         merchandisePhoto.setImageURI(imageUri);
+        int quantity = cursor.getInt(quantityColumnIndex);
         quantityTextView.setText("quantity : " + quantity + "");
 
-        Uri imageUri = null;
-        if (imageString == null) {
-            Picasso.with(context)
-                    .load("")
-                    .into(merchandisePhoto);
-        }
-        else{
-            imageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(StockEntry.COLUMN_STOCK_IMAGE)));
-    }
 
-    final int newQuantity = quantity;
-
-        placeOrderEmailImage.setOnClickListener(new View.OnClickListener() {
+        emailImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createEmail(name, quantity, supplier, price, context);
-                                          }
-                                      });
-        if ( quantity > 0 ) {
-            saleButton.setOnClickListener(new View.OnClickListener(){
-        @Override
-                public void onClick(View v){
-            ContentValues contentValues = new ContentValues();
+                createEmail(stockName, stockSupplier, stockPrice, stockQuantity, context);
+            }
+        });
 
-            contentValues.put(StockEntry.COLUMN_STOCK_QUANTITY, newQuantity -1);
-            Toast.makeText(context, newQuantity + "", Toast.LENGTH_SHORT.show();
-            context.getContentResolver().notifyChange(stockUri, null);
-            Uri currentMerchandiseUri = ContentUris.withAppendedId
-                    (StockEntry.CONTENT_URI, cursor_id);
-            context.getContentResolver().update
-                    (currentMerchandiseUri, contentValues, null, null);
-        }
+        final int newQuantity = quantity;
+
+        if (quantity > 0) {
+            saleButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ContentValues contentValues = new ContentValues();
+
+                    contentValues.put(StockEntry.COLUMN_STOCK_QUANTITY, newQuantity - 1);
+                    Toast.makeText(context, newQuantity + "", Toast.LENGTH_SHORT).show();
+                    //context.getContentResolver().notifyChange(Uri, null);
+                    //context.getContentResolver().update;
+
+                }
+
             });
-        }
-        else{
+        } else {
             Toast.makeText(context, "Update quantity, cannot be a negative value", Toast.LENGTH_SHORT).show();
         }
 
+
         //if stock supplier is empty string or null, then use some default text that
         //says "supplier not available"
-        if (TextUtils.isEmpty(stockSupplier)) {
-            stockSupplier = "Supplier not available";
+        if (TextUtils.isEmpty(supplier)) {
+            supplier = "Supplier not available";
         }
         //Update the Textviews with the attributes for the current item
         nameTextView.setText(stockName);
-        supplierTextView.setText(stockSupplier);
-        }
-        //need help with e mail intent please!!!
-        /////////
+        supplierTextView.setText(supplier);}
+
+    // e mail intent - NEED HELP
+    ///////////////////////////
+    public void createEmail(String toyName, String supplier, String price, int quantity, Context c ) {
+        String content = toyName;
+        content = content + supplier;
+        content = content + price;
+        content = content + quantity;
+        content = content + imageString;
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setType("message/rfc822");
+
+        intent.putExtra(Intent.EXTRA_EMAIL, "@gmail.com");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Inventory Order");
+        intent.putExtra(Intent.EXTRA_TEXT, "Toy Name, Supplier, Quantity, Price");
+        intent.putExtra(Intent.EXTRA_TEXT, content);
+
+    c.startActivity(Intent.createChooser(intent, "Send Email"));
 
 
     }
-
-
+}

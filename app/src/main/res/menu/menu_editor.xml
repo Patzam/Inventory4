@@ -5,13 +5,15 @@
     tools:context=".EditorActivity">
 
     <item
-        android:id="@+id/delete_item_from_menu"
+        android:id="@+id/save_item_from_menu"
         android:title="@string/save"
-        app:showAsAction="always"/>
+        android:icon="@drawable/ic_save_white_24dp"
+        app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/save_item_from_menu"
+        android:id="@+id/delete_item_from_menu"
         android:title="@string/delete"
         app:showAsAction="never"/>
+
 
 </menu>

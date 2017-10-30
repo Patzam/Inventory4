@@ -92,7 +92,7 @@ public class EditorActivity extends AppCompatActivity implements
 
         imageView = (ImageView) findViewById(R.id.image);
         selectImage = (Button) findViewById(R.id.edit_item_image);
-        selectImage.setOnClickListener((View.OnClickListener) this);
+        //selectImage.setOnClickListener(this);
         imageView.setImageURI(null);
 
 
@@ -145,7 +145,7 @@ public class EditorActivity extends AppCompatActivity implements
         mSupplierEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
         mQuantityEditText.setOnTouchListener(mTouchListener);
-        mImageEditText.setOnTouchListener(mTouchListener);
+        //mImageEditText.setOnTouchListener(mTouchListener);
 
     }
 

@@ -17,16 +17,18 @@
     android:layout_centerInParent="true">
 
     <ImageView
-        android:id="@+id/book_pic"
+        android:id="@+id/toys_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/books"/>
+        android:src="@drawable/toystore"/>
 
     <TextView
-        android:text="        Please help build our inventory and
-        add books by selecting the pink arrow at the bottom right"
+        android:text=" Please add more toys by selecting the pink arrow button at the bottom right to add to our inventory. Thank you!"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textStyle="bold"
+        android:textColor="#3F51B5"
+        android:paddingLeft="12dp"
         android:layout_centerInParent="true"
         android:paddingTop="40dp"/>
 
