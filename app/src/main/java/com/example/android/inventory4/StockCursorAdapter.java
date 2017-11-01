@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,15 +49,17 @@ public class StockCursorAdapter extends CursorAdapter {
         TextView supplierTextView = (TextView) view.findViewById(price);
         ImageView merchandisePhoto = (ImageView) view.findViewById(R.id.toy_image);
         TextView quantityTextView = (TextView) view.findViewById(R.id.current_quantity);
-        ImageView saleButton = (ImageView) view.findViewById(R.id.green_sale_bag_button);
+        ImageButton saleButton = (ImageButton) view.findViewById(R.id.green_sale_bag_button);
 
         ImageView emailImage = (ImageView) view.findViewById(R.id.email);
 
         //find the columns of stock attributes
+        int saleColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_SALE);
         int nameColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_NAME);
         int supplierColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_SUPPLIER);
         final int imageColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_IMAGE);
         int quantityColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_QUANTITY);
+        int priceColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_PRICE);
 
         //read stock attributes from the cursor for the current item
         final int stockId = cursor.getInt(COLUMN_INDEX_ID);
@@ -67,9 +70,8 @@ public class StockCursorAdapter extends CursorAdapter {
         final int stockQuantity = cursor.getInt(COLUMN_INDEX_QUANTITY);
 
         Uri imageUri = Uri.parse(cursor.getString(COLUMN_INDEX_IMAGE));
-
-
         merchandisePhoto.setImageURI(imageUri);
+
         int quantity = cursor.getInt(quantityColumnIndex);
         quantityTextView.setText("quantity : " + quantity + "");
 

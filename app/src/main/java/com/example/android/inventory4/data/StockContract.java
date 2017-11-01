@@ -42,6 +42,8 @@ public final class StockContract {
 
         public final static String COLUMN_STOCK_IMAGE = "image";
 
+        public final static String COLUMN_STOCK_SALE = "sale";
+
 
     }
 }

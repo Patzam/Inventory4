@@ -250,20 +250,43 @@ public class EditorActivity extends AppCompatActivity implements
                     NavUtils.navigateUpFromSameTask(EditorActivity.this);
                     return true;
                 }
+            DialogInterface.OnClickListener discardButtonClickListener =
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            NavUtils.navigateUpFromSameTask(EditorActivity.this);
 
+                        }
 
+                    };
+                    showUnsavedChangesDialog(discardButtonClickListener);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
+        //If stock has not changed, continue w handling back button press
         if (!mStockHasChanged) {
             super.onBackPressed();
             return;
         }
-        showUnsavedChangesDialog();
+
+    //If there are unsaved changes, setup a dialog to warn the user.
+    //Create click listerner to handle the user confirming that changes should be discarded.
+    DialogInterface.OnClickListener discardButtonClickListener =
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //close the current activity
+                    finish();
+                }
+            };
+
+        showUnsavedChangesDialog(discardButtonClickListener);
     }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -337,7 +360,10 @@ public class EditorActivity extends AppCompatActivity implements
         mImageEditText.setImageResource(Integer.parseInt(""));
     }
 
-    private void showUnsavedChangesDialog(){        // Create an AlertDialog.Builder and set the message, and click listeners
+    private void showUnsavedChangesDialog(
+            DialogInterface.OnClickListener discardButtonClickListener){
+
+        // Create an AlertDialog.Builder and set the message, and click listeners
         // for the postivie and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.alert_for_unsaved_messages);
@@ -352,7 +378,8 @@ public class EditorActivity extends AppCompatActivity implements
             }
         });
 
-        builder.setPositiveButton(R.string.continue_editing, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.continue_editing,
+                new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Keep editing" button, so dismiss the dialog
                 // and continue editing the stock item.
