@@ -9,9 +9,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,17 +47,13 @@ public class StockCursorAdapter extends CursorAdapter {
         //Find individual views that we want to modify in the list item layout
         TextView nameTextView = (TextView) view.findViewById(R.id.toy_name);
         TextView supplierTextView = (TextView) view.findViewById(price);
-        ImageView merchandisePhoto = (ImageView) view.findViewById(R.id.toy_image);
+        Button merchandisePhoto = (Button) view.findViewById(R.id.select_image);
         TextView quantityTextView = (TextView) view.findViewById(R.id.current_quantity);
         ImageButton saleButton = (ImageButton) view.findViewById(R.id.green_sale_bag_button);
 
-        ImageView emailImage = (ImageView) view.findViewById(R.id.email);
+        ImageButton emailImage = (ImageButton) view.findViewById(R.id.email);
 
         //find the columns of stock attributes
-        int saleColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_SALE);
-        int nameColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_NAME);
-        int supplierColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_SUPPLIER);
-        final int imageColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_IMAGE);
         int quantityColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_QUANTITY);
         int priceColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_STOCK_PRICE);
 
@@ -70,7 +66,6 @@ public class StockCursorAdapter extends CursorAdapter {
         final int stockQuantity = cursor.getInt(COLUMN_INDEX_QUANTITY);
 
         Uri imageUri = Uri.parse(cursor.getString(COLUMN_INDEX_IMAGE));
-        merchandisePhoto.setImageURI(imageUri);
 
         int quantity = cursor.getInt(quantityColumnIndex);
         quantityTextView.setText("quantity : " + quantity + "");
@@ -90,11 +85,13 @@ public class StockCursorAdapter extends CursorAdapter {
                 @Override
                 public void onClick(View v) {
                     ContentValues contentValues = new ContentValues();
-
                     contentValues.put(StockEntry.COLUMN_STOCK_QUANTITY, newQuantity - 1);
                     Toast.makeText(context, newQuantity + "", Toast.LENGTH_SHORT).show();
                     //context.getContentResolver().notifyChange(Uri, null);
                     //context.getContentResolver().update;
+                    //or
+                    //ContentResolver resolver = view.getConext().getContentResolver();
+                    //resolver.update(uri, values, null, null);
 
                 }
 

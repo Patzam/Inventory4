@@ -45,7 +45,6 @@
                 android:id="@+id/edit_item_supplier"
                 android:layout_width="284dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_item_name"
                 android:hint="@string/hint_item_supplier"
                 android:textColorHint="#3949AB"
                 android:textStyle="bold"
@@ -85,7 +84,6 @@
                 android:id="@+id/edit_item_price"
                 android:layout_width="284dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_item_supplier"
                 android:hint="@string/hint_item_price"
                 android:paddingLeft="20dp"
                 android:textColorHint="#3949AB"
@@ -94,10 +92,17 @@
         </LinearLayout>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quantity"/>
+
+
     <LinearLayout
+        android:id="@+id/imageselector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cost"
         android:orientation="horizontal">
 
         <Button
@@ -131,26 +136,36 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/edit_item_quantity"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp">
 
-        <ImageButton
-            android:id="@+id/toy_image"
+        <ImageView
+            android:id="@+id/drop_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/dropimage" />
+
+        <Button
+            android:id="@+id/select_image"
             android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/dropimage"/>
+            android:layout_height="100dp"
+            android:text="Select Image"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
 
         <ImageButton
             android:id="@+id/email"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edit_item_image"
+            android:layout_height="100dp"
             android:src="@drawable/email" />
+
 
     </LinearLayout>
 
 
-</LinearLayout>
+    </LinearLayout>
+
+

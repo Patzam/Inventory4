@@ -90,9 +90,8 @@ public class EditorActivity extends AppCompatActivity implements
             getLoaderManager().initLoader(EXISTING_STOCK_LOADER, null, this);
         }
 
-        imageView = (ImageView) findViewById(R.id.image);
-        selectImage = (Button) findViewById(R.id.edit_item_image);
-        //selectImage.setOnClickListener(this);
+        imageView = (ImageView) findViewById(R.id.drop_image);
+        selectImage = (Button) findViewById(R.id.select_image);
         imageView.setImageURI(null);
 
 
@@ -176,6 +175,7 @@ public class EditorActivity extends AppCompatActivity implements
         // Create a ContentValues object where column names are the keys,
         // and stock attributes from the editor are the values.
         ContentValues values = new ContentValues();
+        values.put(StockEntry._ID, nameString);
         values.put(StockEntry.COLUMN_STOCK_NAME, nameString);
         values.put(StockEntry.COLUMN_STOCK_SUPPLIER, supplierString);
         values.put(StockEntry.COLUMN_STOCK_PRICE, priceString);

@@ -71,10 +71,10 @@ public class MerchandiseActivity extends AppCompatActivity implements LoaderMana
     private void insertStock() {
         ContentValues values = new ContentValues();
         values.put(StockEntry.COLUMN_STOCK_NAME, "Star Trek Action Figure");
-        values.put(StockEntry.COLUMN_STOCK_PRICE, "17.49");
+        values.put(StockEntry.COLUMN_STOCK_PRICE, "17");
         values.put(StockEntry.COLUMN_STOCK_QUANTITY, "20");
         values.put(StockEntry.COLUMN_STOCK_SUPPLIER, "Target");
-        values.put(StockEntry.COLUMN_STOCK_IMAGE, "");
+        values.put(StockEntry.COLUMN_STOCK_IMAGE, "startrekactionfigure");
 
         Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI,
                 values);
