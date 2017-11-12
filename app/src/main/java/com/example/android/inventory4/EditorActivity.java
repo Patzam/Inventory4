@@ -1,5 +1,6 @@
 package com.example.android.inventory4;
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -34,14 +35,14 @@ import static com.example.android.inventory4.data.StockDbHelper.LOG_TAG;
  */
 
 public class EditorActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>  {
+        LoaderManager.LoaderCallbacks<Cursor> {
+
+    private Object imageString;
 
     private ImageView imageView;
     private static final int SELECT_PHOTO = 1;
 
     Uri imageUri;
-
-
 
     private static final int EXISTING_STOCK_LOADER = 0;
 
@@ -56,9 +57,14 @@ public class EditorActivity extends AppCompatActivity implements
     private TextView mQuantityEditText;
 
     private ImageView mImageEditText;
+
     private Button plusButton, minusButton, selectImage;
 
     private boolean mStockHasChanged = false;
+
+    private static final int IMAGE_INTENT_REQUEST = 0;
+
+    private Uri mImageUri;
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
@@ -73,9 +79,9 @@ public class EditorActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         mCurrentStockUri = intent.getData();
-        //This is new stock, so change the app bar to say "Add Sock"
+        //This is new stock, so change the app bar to say "Add Stock"
         if (mCurrentStockUri == null) {
             setTitle(getString(R.string.editor_activity_title_new_stock));
 
@@ -95,6 +101,18 @@ public class EditorActivity extends AppCompatActivity implements
         imageView.setImageURI(null);
 
 
+        selectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select Image"), IMAGE_INTENT_REQUEST);
+
+            }
+        });
+
+
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_item_name);
         mSupplierEditText = (EditText) findViewById(R.id.edit_item_supplier);
@@ -105,12 +123,11 @@ public class EditorActivity extends AppCompatActivity implements
         plusButton = (Button) findViewById(R.id.plus_button);
         minusButton = (Button) findViewById(R.id.minus_button);
 
-
-        plusButton.setOnClickListener(new View.OnClickListener(){
+        plusButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                TextUtils.isEmpty(mQuantityEditText.getText().toString());
+                if (TextUtils.isEmpty(mQuantityEditText.getText().toString())) ;
                 {
                     Toast.makeText(EditorActivity.this, " quantity required ", Toast.LENGTH_SHORT).show();
                     try {
@@ -121,23 +138,23 @@ public class EditorActivity extends AppCompatActivity implements
             }
 
         });
-    minusButton.setOnClickListener(new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            TextUtils.isEmpty(mQuantityEditText.getText().toString());
-            {
-                Toast.makeText(EditorActivity.this, " quantity required ", Toast.LENGTH_SHORT).show();
-                try {
-                } catch (Exception e) {
-                    Log.e(LOG_TAG, "Must contain quantity.", e);
+        minusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextUtils.isEmpty(mQuantityEditText.getText().toString());
+                {
+                    Toast.makeText(EditorActivity.this, " quantity required ", Toast.LENGTH_SHORT).show();
+                    try {
+                    } catch (Exception e) {
+                        Log.e(LOG_TAG, "Must contain quantity.", e);
+                    }
                 }
             }
-        }
 
-    });
+        });
 
 
-    // Setup OnTouchListeners on all the input fields, so we can determine if the user
+        // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
         // or not, if the user tries to leave the editor without saving.
         mNameEditText.setOnTouchListener(mTouchListener);
@@ -157,8 +174,8 @@ public class EditorActivity extends AppCompatActivity implements
         String priceString = mPriceEditText.getText().toString().trim();
         String quantityString = mQuantityEditText.getText().toString().trim();
 
-        if ( imageUri  == null){
-            Toast.makeText(this," Must select image ", Toast.LENGTH_SHORT ).show();
+        if (imageUri == null) {
+            Toast.makeText(this, " Must select image ", Toast.LENGTH_SHORT).show();
             return;
         }
         String imageString = imageUri.toString().trim();
@@ -250,20 +267,34 @@ public class EditorActivity extends AppCompatActivity implements
                     NavUtils.navigateUpFromSameTask(EditorActivity.this);
                     return true;
                 }
-            DialogInterface.OnClickListener discardButtonClickListener =
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
 
-                        }
+                            }
 
-                    };
-                    showUnsavedChangesDialog(discardButtonClickListener);
+                        };
+                showUnsavedChangesDialog(discardButtonClickListener);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == IMAGE_INTENT_REQUEST && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                mImageUri = data.getData();
+                imageView.setImageURI(mImageUri);
+            }
+
+        }
+
+
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -273,16 +304,17 @@ public class EditorActivity extends AppCompatActivity implements
             return;
         }
 
-    //If there are unsaved changes, setup a dialog to warn the user.
-    //Create click listerner to handle the user confirming that changes should be discarded.
-    DialogInterface.OnClickListener discardButtonClickListener =
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    //close the current activity
-                    finish();
-                }
-            };
+
+        //If there are unsaved changes, setup a dialog to warn the user.
+        //Create click listerner to handle the user confirming that changes should be discarded.
+        DialogInterface.OnClickListener discardButtonClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //close the current activity
+                        finish();
+                    }
+                };
 
         showUnsavedChangesDialog(discardButtonClickListener);
     }
@@ -291,8 +323,7 @@ public class EditorActivity extends AppCompatActivity implements
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
-        if ((mCurrentStockUri == null))
-        {
+        if ((mCurrentStockUri == null)) {
             return null;
         }
         String[] projection = {
@@ -337,16 +368,14 @@ public class EditorActivity extends AppCompatActivity implements
 
             Uri imageUri = null;
 
-        if (imageString == null) {
-            Picasso.with(getApplicationContext())
-                    //need help with image url !!!!!!!!!!!!
-                    .load("")
-                    .into(imageView);
-        }
-        else {
-            imageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(StockEntry.COLUMN_STOCK_IMAGE)));
-        }
-        imageView.setImageURI(imageUri);
+            if (imageString == null) {
+                Picasso.with(getApplicationContext())
+                        .load("")
+                        .into(imageView);
+            } else {
+                imageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(StockEntry.COLUMN_STOCK_IMAGE)));
+            }
+            imageView.setImageURI(imageUri);
 
         }
 
@@ -361,7 +390,7 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
     private void showUnsavedChangesDialog(
-            DialogInterface.OnClickListener discardButtonClickListener){
+            DialogInterface.OnClickListener discardButtonClickListener) {
 
         // Create an AlertDialog.Builder and set the message, and click listeners
         // for the postivie and negative buttons on the dialog.
@@ -380,15 +409,15 @@ public class EditorActivity extends AppCompatActivity implements
 
         builder.setPositiveButton(R.string.continue_editing,
                 new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Keep editing" button, so dismiss the dialog
-                // and continue editing the stock item.
-                if (dialog != null) {
-                    dialog.dismiss();
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked the "Keep editing" button, so dismiss the dialog
+                        // and continue editing the stock item.
+                        if (dialog != null) {
+                            dialog.dismiss();
 
-                }
-            }
-        });
+                        }
+                    }
+                });
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -417,7 +446,7 @@ public class EditorActivity extends AppCompatActivity implements
         alertDialog.show();
     }
 
-     // Perform the deletion of the stock in the database.
+    // Perform the deletion of the stock in the database.
     private void deleteStock() {
         // Only perform the delete if this is an existing stock
         if (mCurrentStockUri != null) {
@@ -438,7 +467,36 @@ public class EditorActivity extends AppCompatActivity implements
         }
         finish();
     }
+
+    public String createEmail(String toyName, String supplier, String price, int quantity) {
+        String emlMessage = toyName;
+        emlMessage = emlMessage + supplier;
+        emlMessage = emlMessage + price;
+        emlMessage = emlMessage + quantity;
+        emlMessage = emlMessage + imageString;
+        return emlMessage;
+    }
+
+    public void sendEmail(View view) {
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mail to:"));
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_EMAIL, "@gmail.com");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Inventory");
+        intent.putExtra(Intent.EXTRA_TEXT, "Toy Name, Supplier, Quantity, Price");
+
+        startActivity(Intent.createChooser(intent, "Send e mail"));
+
+    }
+
 }
+
+
+
+
+
+
 
 
 

@@ -160,6 +160,7 @@
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
+            android:onClick="sendEmail"
             android:src="@drawable/email" />
 
 

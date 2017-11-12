@@ -1,8 +1,8 @@
 package com.example.android.inventory4;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -23,8 +23,6 @@ import static com.example.android.inventory4.data.StockContract.StockEntry;
  */
 
 public class StockCursorAdapter extends CursorAdapter {
-
-    private Object imageString;
 
     public StockCursorAdapter(Context context, Cursor c) {
         super((Context) context, c, 0);
@@ -67,38 +65,33 @@ public class StockCursorAdapter extends CursorAdapter {
 
         Uri imageUri = Uri.parse(cursor.getString(COLUMN_INDEX_IMAGE));
 
-        int quantity = cursor.getInt(quantityColumnIndex);
+        final int quantity = cursor.getInt(quantityColumnIndex);
         quantityTextView.setText("quantity : " + quantity + "");
-
-
-        emailImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createEmail(stockName, stockSupplier, stockPrice, stockQuantity, context);
-            }
-        });
 
         final int newQuantity = quantity;
 
-        if (quantity > 0) {
-            saleButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+
+        saleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (quantity > 0) {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(StockEntry.COLUMN_STOCK_QUANTITY, newQuantity - 1);
                     Toast.makeText(context, newQuantity + "", Toast.LENGTH_SHORT).show();
-                    //context.getContentResolver().notifyChange(Uri, null);
-                    //context.getContentResolver().update;
+                    Uri currentStockUri = ContentUris.withAppendedId(StockEntry.CONTENT_URI, stockId);
+                    context.getContentResolver().update(currentStockUri, contentValues, null, null);
                     //or
                     //ContentResolver resolver = view.getConext().getContentResolver();
                     //resolver.update(uri, values, null, null);
 
+                } else {
+                    Toast.makeText(context, "Update quantity, cannot be a negative value", Toast.LENGTH_SHORT).show();
                 }
 
-            });
-        } else {
-            Toast.makeText(context, "Update quantity, cannot be a negative value", Toast.LENGTH_SHORT).show();
-        }
+
+            }
+
+        });
 
 
         //if stock supplier is empty string or null, then use some default text that
@@ -108,27 +101,8 @@ public class StockCursorAdapter extends CursorAdapter {
         }
         //Update the Textviews with the attributes for the current item
         nameTextView.setText(stockName);
-        supplierTextView.setText(supplier);}
-
-    // e mail intent - NEED HELP
-    ///////////////////////////
-    public void createEmail(String toyName, String supplier, String price, int quantity, Context c ) {
-        String content = toyName;
-        content = content + supplier;
-        content = content + price;
-        content = content + quantity;
-        content = content + imageString;
-
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setType("message/rfc822");
-
-        intent.putExtra(Intent.EXTRA_EMAIL, "@gmail.com");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Inventory Order");
-        intent.putExtra(Intent.EXTRA_TEXT, "Toy Name, Supplier, Quantity, Price");
-        intent.putExtra(Intent.EXTRA_TEXT, content);
-
-    c.startActivity(Intent.createChooser(intent, "Send Email"));
-
-
+        supplierTextView.setText(supplier);
     }
+
+
 }

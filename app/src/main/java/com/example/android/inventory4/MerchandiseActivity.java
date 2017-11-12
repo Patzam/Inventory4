@@ -67,6 +67,8 @@ public class MerchandiseActivity extends AppCompatActivity implements LoaderMana
         });
         getLoaderManager().initLoader(STOCK_LOADER, null, this);
     }
+
+
     //Helper method to insert hardcoded stock data into the database. For debugging purposes only.
     private void insertStock() {
         ContentValues values = new ContentValues();
