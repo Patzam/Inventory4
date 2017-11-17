@@ -7,7 +7,7 @@
     <item
         android:id="@+id/enter_dummy_data"
         android:title="@string/enter_dummy_data"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/delete_all_inventory"

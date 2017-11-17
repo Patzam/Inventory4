@@ -15,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static com.example.android.inventory4.R.id.price;
 import static com.example.android.inventory4.data.StockContract.StockEntry;
 
 /**
@@ -44,7 +43,9 @@ public class StockCursorAdapter extends CursorAdapter {
     public void bindView(View view, final Context context, Cursor cursor) {
         //Find individual views that we want to modify in the list item layout
         TextView nameTextView = (TextView) view.findViewById(R.id.toy_name);
-        TextView supplierTextView = (TextView) view.findViewById(price);
+        TextView supplierTextView = (TextView) view.findViewById(R.id.supplier);
+        TextView priceTextView = (TextView) view.findViewById(R.id.price);
+
         Button merchandisePhoto = (Button) view.findViewById(R.id.select_image);
         TextView quantityTextView = (TextView) view.findViewById(R.id.current_quantity);
         ImageButton saleButton = (ImageButton) view.findViewById(R.id.green_sale_bag_button);
@@ -101,7 +102,8 @@ public class StockCursorAdapter extends CursorAdapter {
         }
         //Update the Textviews with the attributes for the current item
         nameTextView.setText(stockName);
-        supplierTextView.setText(supplier);
+        supplierTextView.setText(stockSupplier);
+        priceTextView.setText(stockPrice);
     }
 
 

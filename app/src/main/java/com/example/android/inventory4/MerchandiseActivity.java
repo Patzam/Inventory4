@@ -68,19 +68,20 @@ public class MerchandiseActivity extends AppCompatActivity implements LoaderMana
         getLoaderManager().initLoader(STOCK_LOADER, null, this);
     }
 
-
     //Helper method to insert hardcoded stock data into the database. For debugging purposes only.
     private void insertStock() {
         ContentValues values = new ContentValues();
         values.put(StockEntry.COLUMN_STOCK_NAME, "Star Trek Action Figure");
-        values.put(StockEntry.COLUMN_STOCK_PRICE, "17");
         values.put(StockEntry.COLUMN_STOCK_QUANTITY, "20");
+        values.put(StockEntry.COLUMN_STOCK_PRICE, 17);
         values.put(StockEntry.COLUMN_STOCK_SUPPLIER, "Target");
         values.put(StockEntry.COLUMN_STOCK_IMAGE, "startrekactionfigure");
 
+        //Uri imageUri = Uri.parse(R.drawable.startrekactionfigure);
+        //values.put(COLUMN_STOCK_IMAGE, imageUri.toString());
+
         Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI,
                 values);
-
     }
 
     private void deleteAllInventory4() {

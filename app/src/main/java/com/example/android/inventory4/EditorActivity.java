@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.example.android.inventory4.data.StockContract.StockEntry;
 import com.squareup.picasso.Picasso;
 
+import static com.example.android.inventory4.R.id.quantity;
 import static com.example.android.inventory4.data.StockDbHelper.LOG_TAG;
 
 /**
@@ -36,6 +37,8 @@ import static com.example.android.inventory4.data.StockDbHelper.LOG_TAG;
 
 public class EditorActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
+
+    //int quantity = 1;
 
     private Object imageString;
 
@@ -54,7 +57,7 @@ public class EditorActivity extends AppCompatActivity implements
 
     private EditText mPriceEditText;
 
-    private TextView mQuantityEditText;
+    private TextView mQuantityTextView;
 
     private ImageView mImageEditText;
 
@@ -65,6 +68,7 @@ public class EditorActivity extends AppCompatActivity implements
     private static final int IMAGE_INTENT_REQUEST = 0;
 
     private Uri mImageUri;
+
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
@@ -112,12 +116,11 @@ public class EditorActivity extends AppCompatActivity implements
             }
         });
 
-
         // Find all relevant views that we will need to read user input from
         mNameEditText = (EditText) findViewById(R.id.edit_item_name);
         mSupplierEditText = (EditText) findViewById(R.id.edit_item_supplier);
         mPriceEditText = (EditText) findViewById(R.id.edit_item_price);
-        mQuantityEditText = (TextView) findViewById(R.id.edit_item_quantity);
+        mQuantityTextView = (TextView) findViewById(quantity);
 
         //Quantity button plus and minus
         plusButton = (Button) findViewById(R.id.plus_button);
@@ -126,8 +129,8 @@ public class EditorActivity extends AppCompatActivity implements
         plusButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(mQuantityEditText.getText().toString())) ;
+            public void onClick(View v){
+                if (TextUtils.isEmpty(mQuantityTextView.getText().toString())) ;
                 {
                     Toast.makeText(EditorActivity.this, " quantity required ", Toast.LENGTH_SHORT).show();
                     try {
@@ -141,7 +144,7 @@ public class EditorActivity extends AppCompatActivity implements
         minusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextUtils.isEmpty(mQuantityEditText.getText().toString());
+                TextUtils.isEmpty(mQuantityTextView.getText().toString());
                 {
                     Toast.makeText(EditorActivity.this, " quantity required ", Toast.LENGTH_SHORT).show();
                     try {
@@ -153,17 +156,31 @@ public class EditorActivity extends AppCompatActivity implements
 
         });
 
-
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
         // or not, if the user tries to leave the editor without saving.
         mNameEditText.setOnTouchListener(mTouchListener);
         mSupplierEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
-        mQuantityEditText.setOnTouchListener(mTouchListener);
+        mQuantityTextView.setOnTouchListener(mTouchListener);
         //mImageEditText.setOnTouchListener(mTouchListener);
 
     }
+
+    //public void increaseNumber(View view) {
+      //  quantity = quantity + 1;
+       //// display(quantity);
+    //}
+
+    //public void decreaseNumber(View view) {
+        //if (quantity == 1) {
+          //  Toast.makeText(this, "Quantity cannot be less than 1", Toast.LENGTH_SHORT).show();
+            //return;
+        //}
+        //quantity = quantity - 1;
+        //display(quantity);
+    //}
+
 
     // Get user input from editor and save stock into database
     private void saveStock() {
@@ -172,7 +189,7 @@ public class EditorActivity extends AppCompatActivity implements
         String nameString = mNameEditText.getText().toString().trim();
         String supplierString = mSupplierEditText.getText().toString().trim();
         String priceString = mPriceEditText.getText().toString().trim();
-        String quantityString = mQuantityEditText.getText().toString().trim();
+        String quantityString = mQuantityTextView.getText().toString().trim();
 
         if (imageUri == null) {
             Toast.makeText(this, " Must select image ", Toast.LENGTH_SHORT).show();
@@ -364,7 +381,7 @@ public class EditorActivity extends AppCompatActivity implements
             mNameEditText.setText(name);
             mSupplierEditText.setText(supplier);
             mPriceEditText.setText(Integer.toString(price));
-            mQuantityEditText.setText(Integer.toString(quantity));
+            mQuantityTextView.setText(Integer.toString(quantity));
 
             Uri imageUri = null;
 
@@ -385,7 +402,7 @@ public class EditorActivity extends AppCompatActivity implements
         mNameEditText.setText("");
         mSupplierEditText.setText("");
         mPriceEditText.setText("");
-        mQuantityEditText.setText("");
+        mQuantityTextView.setText("");
         mImageEditText.setImageResource(Integer.parseInt(""));
     }
 
@@ -480,8 +497,7 @@ public class EditorActivity extends AppCompatActivity implements
     public void sendEmail(View view) {
 
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mail to:"));
-        intent.setType("text/plain");
+        intent.setData(Uri.parse("mailto:"));
         intent.putExtra(Intent.EXTRA_EMAIL, "@gmail.com");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Inventory");
         intent.putExtra(Intent.EXTRA_TEXT, "Toy Name, Supplier, Quantity, Price");
@@ -489,6 +505,10 @@ public class EditorActivity extends AppCompatActivity implements
         startActivity(Intent.createChooser(intent, "Send e mail"));
 
     }
+    //  private void display(int quantity) {
+        //TextView quantityTextView = (TextView) findViewById(quantity);
+        //quantityTextView.setText("" + quantity);
+    //}
 
 }
 

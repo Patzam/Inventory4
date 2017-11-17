@@ -24,36 +24,52 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="10sp"
-                android:paddingBottom="40dp"
-                android:paddingTop="14dp"
+                android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
+                android:paddingTop="14dp"
                 android:text="Toy Name:"
                 android:textColor="#00BFA5"
-                android:textSize="20sp"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/supplier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:text="Supplier"
+                android:textColor="#FFC107"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="40dp"
-                android:text="Price($):"
+                android:paddingBottom="8dp"
                 android:paddingLeft="10dp"
-                android:textColor="#FFC107"
-                android:textSize="20sp"
+                android:text="Price($):"
+                android:textColor="#6200EA"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/current_quantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="60dp"
                 android:paddingLeft="10dp"
-                android:text="Current Quantity:"
-                android:textColor="#6200EA"
-                android:textSize="20sp"
+                android:paddingBottom="10dp"
+                android:text="Current Quantity"
+                android:textColor="#00BFA5"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="200dp"
+                android:src="@drawable/startrekactionfigure" />
 
         </LinearLayout>
 
