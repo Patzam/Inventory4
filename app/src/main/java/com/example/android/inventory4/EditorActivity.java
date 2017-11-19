@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.example.android.inventory4.data.StockContract.StockEntry;
 import com.squareup.picasso.Picasso;
 
-import static com.example.android.inventory4.R.id.quantity;
 import static com.example.android.inventory4.data.StockDbHelper.LOG_TAG;
 
 /**
@@ -38,12 +37,11 @@ import static com.example.android.inventory4.data.StockDbHelper.LOG_TAG;
 public class EditorActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    //int quantity = 1;
+    int quantity = 1;
 
     private Object imageString;
 
     private ImageView imageView;
-    private static final int SELECT_PHOTO = 1;
 
     Uri imageUri;
 
@@ -68,7 +66,6 @@ public class EditorActivity extends AppCompatActivity implements
     private static final int IMAGE_INTENT_REQUEST = 0;
 
     private Uri mImageUri;
-
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
@@ -120,7 +117,7 @@ public class EditorActivity extends AppCompatActivity implements
         mNameEditText = (EditText) findViewById(R.id.edit_item_name);
         mSupplierEditText = (EditText) findViewById(R.id.edit_item_supplier);
         mPriceEditText = (EditText) findViewById(R.id.edit_item_price);
-        mQuantityTextView = (TextView) findViewById(quantity);
+        mQuantityTextView = (TextView) findViewById(R.id.quantity);
 
         //Quantity button plus and minus
         plusButton = (Button) findViewById(R.id.plus_button);
@@ -130,7 +127,7 @@ public class EditorActivity extends AppCompatActivity implements
 
             @Override
             public void onClick(View v){
-                if (TextUtils.isEmpty(mQuantityTextView.getText().toString())) ;
+                if (TextUtils.isEmpty(mQuantityTextView.getText().toString()))
                 {
                     Toast.makeText(EditorActivity.this, " quantity required ", Toast.LENGTH_SHORT).show();
                     try {
@@ -138,13 +135,16 @@ public class EditorActivity extends AppCompatActivity implements
                         Log.e(LOG_TAG, " Must contain quantity. ", e);
                     }
                 }
+                else {
+                    increaseNumber();
+                }
             }
 
         });
         minusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextUtils.isEmpty(mQuantityTextView.getText().toString());
+                if (TextUtils.isEmpty(mQuantityTextView.getText().toString()))
                 {
                     Toast.makeText(EditorActivity.this, " quantity required ", Toast.LENGTH_SHORT).show();
                     try {
@@ -152,6 +152,10 @@ public class EditorActivity extends AppCompatActivity implements
                         Log.e(LOG_TAG, "Must contain quantity.", e);
                     }
                 }
+                else{
+                    decreaseNumber();
+                }
+
             }
 
         });
@@ -167,19 +171,19 @@ public class EditorActivity extends AppCompatActivity implements
 
     }
 
-    //public void increaseNumber(View view) {
-      //  quantity = quantity + 1;
-       //// display(quantity);
-    //}
+    public void increaseNumber() {
+        quantity = quantity + 1;
+       display(quantity);
+    }
 
-    //public void decreaseNumber(View view) {
-        //if (quantity == 1) {
-          //  Toast.makeText(this, "Quantity cannot be less than 1", Toast.LENGTH_SHORT).show();
-            //return;
-        //}
-        //quantity = quantity - 1;
-        //display(quantity);
-    //}
+    public void decreaseNumber() {
+        if (quantity == 1) {
+          Toast.makeText(this, "Quantity cannot be less than 1", Toast.LENGTH_SHORT).show();
+        return;
+        }
+        quantity = quantity - 1;
+        display(quantity);
+    }
 
 
     // Get user input from editor and save stock into database
@@ -191,11 +195,12 @@ public class EditorActivity extends AppCompatActivity implements
         String priceString = mPriceEditText.getText().toString().trim();
         String quantityString = mQuantityTextView.getText().toString().trim();
 
-        if (imageUri == null) {
+        if (mImageUri == null) {
             Toast.makeText(this, " Must select image ", Toast.LENGTH_SHORT).show();
             return;
         }
-        String imageString = imageUri.toString().trim();
+        String imageString = mImageUri.toString().trim();
+
 
         // Check if this is supposed to be a new stock
         // and check if all the fields in the editor are blank
@@ -204,16 +209,16 @@ public class EditorActivity extends AppCompatActivity implements
                 TextUtils.isEmpty(priceString) && TextUtils.isEmpty(quantityString)) {
             return;
         }
+
         int quantity = Integer.parseInt(quantityString);
 
         // Create a ContentValues object where column names are the keys,
         // and stock attributes from the editor are the values.
         ContentValues values = new ContentValues();
-        values.put(StockEntry._ID, nameString);
         values.put(StockEntry.COLUMN_STOCK_NAME, nameString);
         values.put(StockEntry.COLUMN_STOCK_SUPPLIER, supplierString);
         values.put(StockEntry.COLUMN_STOCK_PRICE, priceString);
-        values.put(StockEntry.COLUMN_STOCK_QUANTITY, quantity);
+        values.put(StockEntry.COLUMN_STOCK_QUANTITY, quantityString);
         values.put(StockEntry.COLUMN_STOCK_IMAGE, imageString);
 
         // Determine if this is new or existing stock by checking if mCurrentStockUri is null or not
@@ -410,9 +415,10 @@ public class EditorActivity extends AppCompatActivity implements
             DialogInterface.OnClickListener discardButtonClickListener) {
 
         // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the postivie and negative buttons on the dialog.
+        // for the positive and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.alert_for_unsaved_messages);
+        builder.setPositiveButton(R.string.discard, discardButtonClickListener);
         builder.setNegativeButton(R.string.continue_editing, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Keep editing" button, so dismiss the dialog
@@ -424,22 +430,10 @@ public class EditorActivity extends AppCompatActivity implements
             }
         });
 
-        builder.setPositiveButton(R.string.continue_editing,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User clicked the "Keep editing" button, so dismiss the dialog
-                        // and continue editing the stock item.
-                        if (dialog != null) {
-                            dialog.dismiss();
-
-                        }
-                    }
-                });
-
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-
+    //Prompt the user to confirm that they want to delete this toy.
     private void showDeleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners
         // for the postivie and negative buttons on the dialog.
@@ -499,16 +493,16 @@ public class EditorActivity extends AppCompatActivity implements
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:"));
         intent.putExtra(Intent.EXTRA_EMAIL, "@gmail.com");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Inventory");
-        intent.putExtra(Intent.EXTRA_TEXT, "Toy Name, Supplier, Quantity, Price");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Order More Inventory");
+        intent.putExtra(Intent.EXTRA_TEXT, "Toy Name:    Supplier:    Quantity:    Price:    ");
 
         startActivity(Intent.createChooser(intent, "Send e mail"));
 
     }
-    //  private void display(int quantity) {
-        //TextView quantityTextView = (TextView) findViewById(quantity);
-        //quantityTextView.setText("" + quantity);
-    //}
+      private void display(int quantity) {
+        TextView quantityTextView = (TextView) findViewById(R.id.quantity);
+        quantityTextView.setText("" + quantity);
+    }
 
 }
 

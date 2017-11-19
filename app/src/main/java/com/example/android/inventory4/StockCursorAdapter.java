@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ public class StockCursorAdapter extends CursorAdapter {
         TextView nameTextView = (TextView) view.findViewById(R.id.toy_name);
         TextView supplierTextView = (TextView) view.findViewById(R.id.supplier);
         TextView priceTextView = (TextView) view.findViewById(R.id.price);
+        ImageView imageView = (ImageView) view.findViewById(R.id.product_image);
 
         Button merchandisePhoto = (Button) view.findViewById(R.id.select_image);
         TextView quantityTextView = (TextView) view.findViewById(R.id.current_quantity);
@@ -64,7 +66,11 @@ public class StockCursorAdapter extends CursorAdapter {
         final String stockPrice = cursor.getString(COLUMN_INDEX_PRICE);
         final int stockQuantity = cursor.getInt(COLUMN_INDEX_QUANTITY);
 
+        if (!cursor.getString(COLUMN_INDEX_IMAGE).equals("default")){
+
         Uri imageUri = Uri.parse(cursor.getString(COLUMN_INDEX_IMAGE));
+        imageView.setImageURI(imageUri);
+        }
 
         final int quantity = cursor.getInt(quantityColumnIndex);
         quantityTextView.setText("quantity : " + quantity + "");

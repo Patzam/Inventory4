@@ -75,7 +75,7 @@ public class MerchandiseActivity extends AppCompatActivity implements LoaderMana
         values.put(StockEntry.COLUMN_STOCK_QUANTITY, "20");
         values.put(StockEntry.COLUMN_STOCK_PRICE, 17);
         values.put(StockEntry.COLUMN_STOCK_SUPPLIER, "Target");
-        values.put(StockEntry.COLUMN_STOCK_IMAGE, "startrekactionfigure");
+        values.put(StockEntry.COLUMN_STOCK_IMAGE, "default");
 
         //Uri imageUri = Uri.parse(R.drawable.startrekactionfigure);
         //values.put(COLUMN_STOCK_IMAGE, imageUri.toString());
