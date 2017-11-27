@@ -195,18 +195,27 @@ public class EditorActivity extends AppCompatActivity implements
         String priceString = mPriceEditText.getText().toString().trim();
         String quantityString = mQuantityTextView.getText().toString().trim();
 
+
         if (mImageUri == null) {
             Toast.makeText(this, " Must select image ", Toast.LENGTH_SHORT).show();
             return;
         }
+
         String imageString = mImageUri.toString().trim();
 
 
         // Check if this is supposed to be a new stock
         // and check if all the fields in the editor are blank
-        if (mCurrentStockUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(supplierString) &&
-                TextUtils.isEmpty(priceString) && TextUtils.isEmpty(quantityString)) {
+        if (TextUtils.isEmpty(nameString)) {
+            Toast.makeText(this, " Must add name ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(supplierString)){
+            Toast.makeText(this, " Must add supplier ", Toast.LENGTH_SHORT).show();
+        return;
+    }
+        if (TextUtils.isEmpty(priceString)){
+            Toast.makeText(this, " Must add price ", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -243,17 +252,14 @@ public class EditorActivity extends AppCompatActivity implements
             if (rowsAffected == 0) {
                 Toast.makeText(this, getString(R.string.editor_stock_update_failed),
                         Toast.LENGTH_SHORT).show();
-                Intent newIntent = new Intent(this, MerchandiseActivity.class);
-                startActivity(newIntent);
 
             } else {
 
                 Toast.makeText(this, getString(R.string.editor_stock_update_successful),
                         Toast.LENGTH_SHORT).show();
-                Intent newIntent = new Intent(this, MerchandiseActivity.class);
-                startActivity(newIntent);
             }
         }
+        finish();
     }
 
     @Override
@@ -277,8 +283,9 @@ public class EditorActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.save_item_from_menu:
                 saveStock();
-                finish();
+                //finish();
                 return true;
+
 
             case R.id.delete_item_from_menu:
                 showDeleteConfirmationDialog();
@@ -388,27 +395,25 @@ public class EditorActivity extends AppCompatActivity implements
             mPriceEditText.setText(Integer.toString(price));
             mQuantityTextView.setText(Integer.toString(quantity));
 
-            Uri imageUri = null;
-
             if (imageString == null) {
                 Picasso.with(getApplicationContext())
                         .load("")
                         .into(imageView);
             } else {
-                imageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(StockEntry.COLUMN_STOCK_IMAGE)));
+                mImageUri = Uri.parse(cursor.getString(cursor.getColumnIndex(StockEntry.COLUMN_STOCK_IMAGE)));
             }
-            imageView.setImageURI(imageUri);
+            imageView.setImageURI(mImageUri);
 
         }
 
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {
-        mNameEditText.setText("");
-        mSupplierEditText.setText("");
-        mPriceEditText.setText("");
-        mQuantityTextView.setText("");
-        mImageEditText.setImageResource(Integer.parseInt(""));
+        //mNameEditText.setText("");
+        //mSupplierEditText.setText("");
+        //mPriceEditText.setText("");
+        //mQuantityTextView.setText("");
+        //mImageEditText.setImageResource(Integer.parseInt(""));
     }
 
     private void showUnsavedChangesDialog(

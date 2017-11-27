@@ -25,7 +25,7 @@ import static com.example.android.inventory4.data.StockContract.StockEntry;
 public class StockCursorAdapter extends CursorAdapter {
 
     public StockCursorAdapter(Context context, Cursor c) {
-        super((Context) context, c, 0);
+        super(context, c, 0);
     }
 
     final int COLUMN_INDEX_ID = 0;
@@ -50,7 +50,7 @@ public class StockCursorAdapter extends CursorAdapter {
 
         Button merchandisePhoto = (Button) view.findViewById(R.id.select_image);
         TextView quantityTextView = (TextView) view.findViewById(R.id.current_quantity);
-        ImageButton saleButton = (ImageButton) view.findViewById(R.id.green_sale_bag_button);
+        ImageView saleButton = (ImageView) view.findViewById(R.id.green_sale_bag_button);
 
         ImageButton emailImage = (ImageButton) view.findViewById(R.id.email);
 

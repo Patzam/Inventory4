@@ -9,14 +9,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
-import static com.example.android.inventory4.data.StockContract.CONTENT_AUTHORITY;
-import static com.example.android.inventory4.data.StockDbHelper.LOG_TAG;
-
 /**
  * Created by Patty on 10/3/2017.
  */
 
 public class StockProvider extends ContentProvider {
+
+    public static final String LOG_TAG = StockProvider.class.getSimpleName();
 
     private static final int INVENTORY4 = 100;
 
@@ -25,7 +24,7 @@ public class StockProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        sUriMatcher.addURI(CONTENT_AUTHORITY, StockContract.PATH_INVENTORY4, INVENTORY4);
+        sUriMatcher.addURI(StockContract.CONTENT_AUTHORITY, StockContract.PATH_INVENTORY4, INVENTORY4);
 
         sUriMatcher.addURI(StockContract.CONTENT_AUTHORITY, StockContract.PATH_INVENTORY4 + "/#", STOCK_ID);
 
@@ -82,6 +81,10 @@ public class StockProvider extends ContentProvider {
         if (name == null || name.equals("") || name.equals(" ")) {
             throw new IllegalArgumentException("Stock must have a name");
         }
+        String supplier = values.getAsString(StockContract.StockEntry.COLUMN_STOCK_SUPPLIER);
+        if (name == null || name.equals("") || name.equals(" ")){
+            throw new IllegalArgumentException("Stock must have supplier");
+        }
         Integer price = values.getAsInteger(StockContract.StockEntry.COLUMN_STOCK_PRICE);
         if (price == null) {
             throw new IllegalArgumentException("Stock must have a price");
@@ -101,7 +104,7 @@ public class StockProvider extends ContentProvider {
 
         long id = database.insert(StockContract.StockEntry.TABLE_NAME, null, values);
         if ( id == -1) {
-            Log.e(LOG_TAG, " insert to database failed " + uri);
+            Log.e(LOG_TAG, "Insert to database failed " + uri);
             return null;
         }
         getContext().getContentResolver().notifyChange(uri, null);
@@ -132,6 +135,13 @@ public class StockProvider extends ContentProvider {
                 throw new IllegalArgumentException("Stock must have a name");
             }
         }
+        if (values.containsKey(StockContract.StockEntry.COLUMN_STOCK_SUPPLIER)){
+            String supplier = values.getAsString(StockContract.StockEntry.COLUMN_STOCK_SUPPLIER);
+            if (supplier == null) {
+                throw new IllegalArgumentException("Stock must have a supplier");
+            }
+        }
+
         if (values.containsKey(StockContract.StockEntry.COLUMN_STOCK_PRICE)) {
             Integer price = values.getAsInteger(StockContract.StockEntry.COLUMN_STOCK_PRICE);
             if (price == null) {
@@ -190,7 +200,6 @@ public class StockProvider extends ContentProvider {
         return rowsDeleted;
 
     }
-
     @Override
     public String getType(Uri uri) {
         return null;
